@@ -1,5 +1,5 @@
 interface:
   display_name: "Oil Tone"
-  short_description: "让 AI 文案保持真实、平实、结构完整、朗读自然并且易读"
+  short_description: "自然、易读、通顺、清楚，同时守住事实边界"
   brand_color: "#E85D3F"
-  default_prompt: "使用 $oil-tone 把这份草稿改成平实、准确、结构完整并且易读的中文成稿。"
+  default_prompt: "使用 $oil-tone 把这份草稿改成自然、易读、通顺、清楚的中文成稿。保留有语法和语气作用的‘的’‘了’等虚词，不为压缩或书面感机械删改。"
