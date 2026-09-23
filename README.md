@@ -69,7 +69,7 @@ cp -R oil-tone/skills/oil-tone ~/.codex/skills/oil-tone
 
 ## 脚本检查
 
-Skill 附带一个只使用 Python 标准库的检查脚本。`FAIL` 表示已经确认的问题，会让脚本返回失败；`WARN` 表示需要结合上下文判断的常见 AI 表达，不会单独让脚本失败：
+Skill 附带一个只使用 Python 标准库的检查脚本。它会用 `WARN` 提醒你复核可能空泛或重复的表达，不会替你决定是否改写：
 
 ```bash
 python3 ~/.codex/skills/oil-tone/scripts/tone_lint.py draft.md
@@ -81,7 +81,7 @@ python3 ~/.codex/skills/oil-tone/scripts/tone_lint.py draft.md
 python3 ~/.codex/skills/oil-tone/scripts/tone_lint.py --self-test
 ```
 
-合理表达命中 `WARN` 时可以保留。脚本只能发现已知模式，不能判断事实是否可靠，也不能代替通读和朗读检查。
+表达自然且意思准确时可以保留。没有提示也不代表文章自然易读；脚本不能判断事实是否可靠，也不能代替通读和朗读检查。
 
 ## 仓库结构
 
@@ -113,7 +113,7 @@ oil-tone/
 
 ## 配置、依赖与使用边界
 
-纯文本规范，无脚本安装、外部账号或 API Key 配置；支持能够读取 Markdown Skill 的 Agent。
+文风规范不需要外部账号或 API Key；可选的检查脚本只使用 Python 标准库。支持能够读取 Markdown Skill 的 Agent。
 
 文风规则不提供事实依据；未确认经历不能写成事实。来源数值与计算矛盾时先核对，不因保留原文而延续错误。
 
