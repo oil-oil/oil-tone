@@ -106,6 +106,19 @@ oil-tone/
 
 这样可以避免为了修复一个例句，增加一条会伤害其他内容的机械规则。
 
+
+---
+
+<p align="center">
+  <a href="https://studio.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=oil-tone">
+    <img src="https://raw.githubusercontent.com/oil-oil/oil-studio-skill/main/assets/readme/creator-card.png" width="100%" alt="Oil Studio：给自媒体创作者的 Mac 录屏与口播精剪软件">
+  </a>
+</p>
+
+<p align="center">
+  <strong><a href="https://studio.oiloil.org/?utm_source=github&utm_medium=readme&utm_campaign=oil-tone">录屏、自动缩放、按文字剪口播、加字幕，一个 Mac App 搞定 → 了解 Oil Studio</a></strong>
+</p>
+
 ## License
 
 [MIT](./LICENSE)
