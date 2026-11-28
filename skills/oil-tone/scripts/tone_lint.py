@@ -21,7 +21,9 @@ WARNING_RULES: tuple[Rule, ...] = (
     (re.compile(r"(?:值得注意的是|需要指出的是|毋庸置疑|不可否认的是?)"), "删除没有承担限定或转折作用的固定领起语。"),
     (re.compile(r"(?:大白话|通俗易懂|掰开揉碎)"), "删除自我标榜表达，直接把事情讲清楚。"),
     (re.compile(r"(?:常被问到|经常有人问|顺带回答一个)"), "确认提问是否有真实依据；若只是自问自答的过渡，直接陈述问题或观点。"),
-    (re.compile(r"(?:秒出|秒改|绝杀|降维打击|一家通吃|护城河|王炸)"), "确认是否属于推销或夸张修辞；改为平实具体的效果与边界。"),
+    (re.compile(r"(?:秒出|秒改|绝杀|降维打击|一家通吃|护城河|王炸|封神|炸裂|拉满|真香|血泪教训|保姆级|干货满满)"), "确认是否属于推销或夸张修辞；改为平实具体的效果与边界。"),
+    (re.compile(r"(?:老毛病|死图|露馅|白折腾|稳稳当当|瞎画|瞎猜|干巴巴|翻车|一鱼两吃)"), "确认是否为了显得口语而生造草根/短视频俚语或用力吐槽；改为平实具体的现象与标准动宾表达。"),
+    (re.compile(r"(?:随附|观感|肌理|策展|量测|无头浏览器)"), "确认是否属于外文直译腔或 README 书面术语外泄；面向大众阅读时改为「自带/内置」「视觉效果」「质感」「筛选整理」「测量/分析」「后台浏览器渲染」等日常中文。"),
     (re.compile(r"(?:(?:100%|百分百)\s*(?:保证|确保|准确|正确|可靠|可用|安全|还原|解决)|永不(?:出错|失败|丢失|崩溃|失效)|绝对(?:安全|可靠|准确|有效|不会(?:出错|失败|丢失|崩溃|漏掉))|彻底解决)"), "核对绝对化判断是否有严格证明；若没有，改为实测范围或已知边界。"),
     (re.compile(r"(?:底层脾气|摸透.{0,6}脾气|千叮咛万嘱咐|傻乎乎|焊死在|纹丝不动|脏活累活)"), "确认是否过度拟人或用力过猛；改为平实准确的机制与动作描述。"),
     (re.compile(r"顺手"), "避免高频口癖词「顺手 / 用顺手」；按语境改为「用好」「好用」「直接」「一并」或直接删除。"),
@@ -68,12 +70,27 @@ def visible_lines(text: str) -> list[tuple[int, str]]:
     return lines
 
 
+CONTRAST_TEMPLATE_RE = re.compile(r"(?:不是|不去|不让|不会|并非)[^，。！？\n]{2,28}[，,]?\s*而是")
+
+
 def find_matches(text: str, rules: tuple[Rule, ...]) -> list[tuple[int, str, str]]:
     matches: list[tuple[int, str, str]] = []
-    for line_number, line in visible_lines(text):
+    lines = visible_lines(text)
+    contrast_hits: list[tuple[int, str]] = []
+    for line_number, line in lines:
         for pattern, fix in rules:
             if pattern.search(line):
                 matches.append((line_number, line, fix))
+        if CONTRAST_TEMPLATE_RE.search(line):
+            contrast_hits.append((line_number, line))
+    if len(contrast_hits) >= 2:
+        hint = (
+            f"全文多处出现「不是/不会 A，而是 B」反差对仗（共 {len(contrast_hits)} 处）；"
+            "确认是否属于 AI 模板句式，非必要排他对比请直接陈述做法或事实。"
+        )
+        for line_number, line in contrast_hits:
+            matches.append((line_number, line, hint))
+        matches.sort(key=lambda item: item[0])
     return matches
 
 
@@ -91,6 +108,10 @@ def self_test() -> int:
         "下面我用大白话把这套机制掰开揉碎讲清楚。",
         "经常有人问，这两个工具到底怎么选。",
         "这个功能可以秒出结果，在同类产品里属于绝杀。",
+        "直接生图有个老毛病，一挪位置就会露馅，等于白折腾。",
+        "这个工具随附了无头浏览器脚本，用来量测页面的光影肌理和观感。",
+        "我们不去直接写代码，而是先让它画出整套设计稿。",
+        "它不是普通的模板工具，而是重做整套流程的新方案。",
         "新架构可以 100% 保证系统永不出错，彻底解决并发问题。",
         "我们得先摸透模型的脾气，把配置焊死在开头。",
         "先把这个工具用顺手，再顺手把配置文件改一下。",
@@ -115,6 +136,9 @@ def self_test() -> int:
         "这个模块的历史包袱比较重，重构时先保留了旧接口。",
         "界面反馈非常直接，点击按钮就能看到状态变化。",
         "我绝对不会盲目听信未经核实的医疗建议。",
+        "这个仓库内置了本地脚本，用来分析背景颜色、字号和元素位置。",
+        "我们直接用标准中文动词把修改文字和拖拽图片的过程讲清楚。",
+        "这次调整不是为了把篇幅硬压短，而是删除没有依据的客套话。",
     ))
     warnings = find_warnings(warning_bad)
     warning_lines = {line_number for line_number, _, _ in warnings}
